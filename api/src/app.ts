@@ -30,6 +30,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import mathRouter from './controllers/math.js';
 import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
@@ -324,6 +325,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/math', mathRouter);
 
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
