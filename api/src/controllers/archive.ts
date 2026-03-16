@@ -25,7 +25,20 @@ router.patch(
 		}
 
 		const keys: PrimaryKey[] = req.body?.keys;
+
+		// Reject explicit null — do not silently default
+		if (req.body && 'status_field' in req.body && req.body.status_field === null) {
+			throw new InvalidPayloadError({ reason: "'status_field' must be a non-empty string, not null." });
+		}
+
 		const statusField: string = req.body?.status_field ?? 'status';
+
+		// status_field must be a non-empty alphabetic identifier (no pure numeric strings)
+		if (typeof statusField !== 'string' || !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(statusField)) {
+			throw new InvalidPayloadError({
+				reason: "'status_field' must be a valid field name (letters, digits, underscores; cannot start with a digit).",
+			});
+		}
 
 		if (!Array.isArray(keys) || keys.length === 0) {
 			throw new InvalidPayloadError({ reason: "'keys' must be a non-empty array of primary keys." });
@@ -33,6 +46,13 @@ router.patch(
 
 		if (keys.length > 500) {
 			throw new InvalidPayloadError({ reason: 'Cannot archive more than 500 items at once.' });
+		}
+
+		// Reject negative integer keys
+		const hasNegativeKey = keys.some((k) => typeof k === 'number' && k < 0);
+
+		if (hasNegativeKey) {
+			throw new InvalidPayloadError({ reason: "'keys' must not contain negative integers." });
 		}
 
 		const service = new ItemsService(req.collection, {
