@@ -16,6 +16,7 @@ import { aiFilesRouter } from './ai/files/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
+import archiveRouter from './controllers/archive.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
@@ -358,6 +359,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
+	app.use('/archive', archiveRouter);
 	app.use(extensionManager.getEndpointRouter());
 	await emitter.emitInit('routes.custom.after', { app });
 
