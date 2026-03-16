@@ -7,7 +7,7 @@ export default defineModule({
 	icon: 'dns',
 	routes: [
 		{
-			name: 'server-info',
+			name: 'server-info-index',
 			path: '',
 			component: ServerInfo,
 		},
