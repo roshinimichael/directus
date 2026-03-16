@@ -26,7 +26,7 @@ export function getDefaultIndexName(
 
 	if (indexName.length <= maxLength) return indexName;
 
-	const suffix = `__${getSimpleHash(indexName)}_${type}`;
+	const suffix = `__${getSimpleHash(indexName, 6)}_${type}`;
 	const prefix = indexName.substring(0, maxLength - suffix.length);
 
 	return `${prefix}${suffix}`;
