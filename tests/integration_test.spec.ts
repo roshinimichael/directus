@@ -108,5 +108,8 @@ test('testIntegration', async () => {
 
     // Generated Assertions
     expect(archivePatchResponse.statusCode, 'status code').toBe(200);
+    expect(getValue(archivePatchResponse, "data.archived"), 'archived count').toBe(1);
+    expect(getValue(archivePatchResponse, "data.status_field"), 'status field').toBe("status");
+
 });
 
