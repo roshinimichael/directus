@@ -23,6 +23,7 @@ import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
 import deploymentWebhookRouter from './controllers/deployment-webhooks.js';
 import deploymentRouter from './controllers/deployment.js';
+import exportsRouter from './controllers/exports.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
@@ -358,6 +359,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
+	app.use('/exports', exportsRouter);
 	app.use(extensionManager.getEndpointRouter());
 	await emitter.emitInit('routes.custom.after', { app });
 
