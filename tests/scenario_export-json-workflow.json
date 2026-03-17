@@ -1,0 +1,80 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"skyramp_export_test\", \"fields\": [{\"field\": \"name\", \"type\": \"string\", \"meta\": {\"interface\": \"input\"}}], \"schema\": {}, \"meta\": {}}",
+    "ResponseBody": "{\"data\": {\"collection\": \"skyramp_export_test\", \"fields\": [{\"collection\": \"skyramp_export_test\", \"field\": \"id\", \"type\": \"integer\"}, {\"collection\": \"skyramp_export_test\", \"field\": \"name\", \"type\": \"string\"}]}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:53:26.000Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"name\": \"Directus Export Sample Item\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"name\": \"Directus Export Sample Item\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/skyramp_export_test",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:53:30.184Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"format\": \"json\"}",
+    "ResponseBody": "{\"data\": [{\"id\": 1, \"name\": \"Directus Export Sample Item\"}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/exports/skyramp_export_test",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:53:34.258Z",
+    "Scheme": "http"
+  }
+]
