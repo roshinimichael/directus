@@ -1,0 +1,83 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"test_orders\", \"schema\": {\"name\": \"test_orders\"}, \"fields\": [{\"field\": \"id\", \"type\": \"integer\", \"meta\": {\"hidden\": true, \"interface\": \"input\"}, \"schema\": {\"is_primary_key\": true, \"has_auto_increment\": true}}, {\"field\": \"title\", \"type\": \"string\", \"meta\": {\"interface\": \"input\"}, \"schema\": {}}]}",
+    "ResponseBody": "{\"data\": {\"collection\": \"test_orders\", \"meta\": {\"collection\": \"test_orders\"}, \"schema\": {\"name\": \"test_orders\"}}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:29:46.165Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"title\": \"Order One\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"title\": \"Order One\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/test_orders",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:29:53.716Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"format\": \"csv\"}",
+    "ResponseBody": "{\"data\": \"id,title\\n1,Order One\"}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "text/csv"
+      ],
+      "Content-Disposition": [
+        "attachment; filename=\"test_orders.csv\""
+      ]
+    },
+    "Method": "POST",
+    "Path": "/exports/test_orders",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-17T23:29:58.661Z",
+    "Scheme": "http"
+  }
+]
