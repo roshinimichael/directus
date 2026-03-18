@@ -1,0 +1,106 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"skyramp_archive_test\", \"fields\": [{\"field\": \"id\", \"type\": \"integer\", \"meta\": {\"hidden\": true, \"interface\": \"input\", \"readonly\": true}, \"schema\": {\"is_primary_key\": true, \"has_auto_increment\": true}}, {\"field\": \"status\", \"type\": \"string\", \"meta\": {\"width\": \"full\", \"interface\": \"select-dropdown\", \"options\": {\"choices\": [{\"text\": \"Draft\", \"value\": \"draft\"}, {\"text\": \"Archived\", \"value\": \"archived\"}]}}, \"schema\": {\"default_value\": \"draft\"}}]}",
+    "ResponseBody": "{\"data\": {\"collection\": \"skyramp_archive_test\", \"fields\": [{\"field\": \"id\"}, {\"field\": \"status\"}]}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:31:48.258Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"status\": \"draft\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"status\": \"draft\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/skyramp_archive_test",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:31:52.263Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"keys\": [1], \"status_field\": \"status\"}",
+    "ResponseBody": "{\"data\": {\"archived\": 1, \"keys\": [1], \"status_field\": \"status\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "PATCH",
+    "Path": "/archive/skyramp_archive_test",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:31:57.734Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"status\": \"archived\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/items/skyramp_archive_test/1",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:32:01.078Z",
+    "Scheme": "http"
+  }
+]
