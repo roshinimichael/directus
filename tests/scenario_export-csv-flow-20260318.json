@@ -1,0 +1,83 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"test_csv_export\", \"meta\": {\"hidden\": false}, \"schema\": {}, \"fields\": [{\"field\": \"name\", \"type\": \"string\", \"meta\": {\"interface\": \"input\"}, \"schema\": {}}]}",
+    "ResponseBody": "{\"data\": {\"collection\": \"test_csv_export\", \"meta\": {\"hidden\": false}, \"schema\": {\"name\": \"test_csv_export\"}}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:21:16.516Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"name\": \"CSV Export Row\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"name\": \"CSV Export Row\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/test_csv_export",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:21:21.321Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"format\": \"csv\"}",
+    "ResponseBody": "id,name\\n1,CSV Export Row",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "text/csv"
+      ],
+      "Content-Disposition": [
+        "attachment; filename=\"test_csv_export.csv\""
+      ]
+    },
+    "Method": "POST",
+    "Path": "/exports/test_csv_export",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-18T00:21:25.968Z",
+    "Scheme": "http"
+  }
+]
