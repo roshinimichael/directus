@@ -35,8 +35,17 @@ router.get(
 router.post(
 	'/hash/generate',
 	asyncHandler(async (req, res) => {
+		if (req.body?.strings !== undefined) {
+			if (!Array.isArray(req.body.strings) || req.body.strings.length === 0) {
+				throw new InvalidPayloadError({ reason: `"strings" must be a non-empty array` });
+			}
+
+			const hashes = await Promise.all(req.body.strings.map((s: string) => generateHash(s)));
+			return res.json({ data: hashes });
+		}
+
 		if (!req.body?.string) {
-			throw new InvalidPayloadError({ reason: `"string" is required` });
+			throw new InvalidPayloadError({ reason: `"string" or "strings" is required` });
 		}
 
 		const hash = await generateHash(req.body.string);
