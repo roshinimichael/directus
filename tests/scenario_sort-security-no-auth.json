@@ -1,0 +1,25 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"item\": 1, \"to\": 2}",
+    "ResponseBody": "{\"errors\": [{\"message\": \"You don't have permission to access this.\", \"extensions\": {\"code\": \"FORBIDDEN\"}}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/sort/directus_files",
+    "QueryParams": {},
+    "StatusCode": 401,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T17:52:34.613Z",
+    "Scheme": "http"
+  }
+]
