@@ -1,0 +1,54 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"recipient\": \"26d4af7d-4d57-41cf-b0be-e00d9d3d731e\", \"subject\": \"Workflow Test Notification\", \"message\": \"Notification to be marked read via bulk endpoint\"}",
+    "ResponseBody": "{\"data\": {\"id\": 2, \"timestamp\": \"2026-03-20T00:00:00.000Z\", \"status\": \"inbox\", \"recipient\": \"26d4af7d-4d57-41cf-b0be-e00d9d3d731e\", \"sender\": null, \"subject\": \"Workflow Test Notification\", \"message\": \"Notification to be marked read via bulk endpoint\", \"collection\": null, \"item\": null}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/notifications",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:44:35.395Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{}",
+    "ResponseBody": "{\"data\": [2]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "PATCH",
+    "Path": "/notifications/read",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:44:47.637Z",
+    "Scheme": "http"
+  }
+]
