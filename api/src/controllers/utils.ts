@@ -88,6 +88,35 @@ router.post(
 	}),
 );
 
+const BatchRevertSchema = Joi.alternatives(
+	Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).min(1),
+	Joi.object({
+		revisions: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).min(1).required(),
+	}),
+);
+
+router.post(
+	'/revert',
+	asyncHandler(async (req, _res, next) => {
+		const { error, value } = BatchRevertSchema.validate(req.body);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		const revisions: (string | number)[] = Array.isArray(value) ? value : value.revisions;
+
+		const service = new RevisionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		for (const revision of revisions) {
+			await service.revert(revision);
+		}
+
+		next();
+	}),
+	respond,
+);
+
 router.post(
 	'/revert/:revision',
 	asyncHandler(async (req, _res, next) => {
