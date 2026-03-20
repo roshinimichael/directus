@@ -107,3 +107,15 @@ jobs:
           skyramp_license_file: ${{ secrets.SKYRAMP_LICENSE_FILE }}
           anthropic_api_key: ${{ secrets.SKYRAMP_TESTBOT_API_KEY }}
           github_token: ${{ steps.app-token.outputs.token }}
+          auto_commit: 'true'
+          skyramp_mcp_version: next
+          skyramp_executor_version: v1.3.14
+          target_setup_command: 'docker compose -f docker-compose.testbot.yml up -d'
+          target_teardown_command: 'docker compose -f docker-compose.testbot.yml down -v'
+          target_ready_check_command: 'curl -sf http://localhost:8055/server/health'
+          target_ready_check_timeout: '300'
+          auth_token_command: >
+            curl -sf -X POST http://localhost:8055/auth/login
+            -H 'Content-Type: application/json'
+            -d '{"email":"admin@example.com","password":"admin"}'
+            | jq -r '.data.access_token'
