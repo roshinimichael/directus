@@ -1,0 +1,103 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"name\": \"skyramp-no-sort-role\", \"admin_access\": false, \"app_access\": false}",
+    "ResponseBody": "{\"data\": {\"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\", \"name\": \"skyramp-no-sort-role\", \"admin_access\": false}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/roles",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:24:44.713Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"email\": \"nosortuser@skyramp.test\", \"password\": \"Skyramp123!\", \"role\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"}",
+    "ResponseBody": "{\"data\": {\"id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\", \"email\": \"nosortuser@skyramp.test\", \"role\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/users",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:24:55.487Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"email\": \"nosortuser@skyramp.test\", \"password\": \"Skyramp123!\"}",
+    "ResponseBody": "{\"data\": {\"access_token\": \"SKYRAMP_PLACEHOLDER_TOKEN\", \"expires\": 900000, \"refresh_token\": \"refresh_placeholder\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/auth/login",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:25:02.525Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"item\": 1, \"to\": 2}",
+    "ResponseBody": "{\"errors\": [{\"message\": \"You don't have permission to access this.\", \"extensions\": {\"code\": \"FORBIDDEN\"}}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/sort/directus_files",
+    "QueryParams": {},
+    "StatusCode": 403,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:25:12.908Z",
+    "Scheme": "http"
+  }
+]
