@@ -65,16 +65,18 @@ router.post(
 	}),
 );
 
-const SortSchema = Joi.object({
+const SortItemSchema = Joi.object({
 	item: Joi.alternatives(Joi.string(), Joi.number()).required(),
 	to: Joi.alternatives(Joi.string(), Joi.number()).required(),
 });
+
+const SortSchema = Joi.alternatives(SortItemSchema, Joi.array().items(SortItemSchema).min(1));
 
 router.post(
 	'/sort/:collection',
 	collectionExists,
 	asyncHandler(async (req, res) => {
-		const { error } = SortSchema.validate(req.body);
+		const { error, value } = SortSchema.validate(req.body);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UtilsService({
@@ -82,7 +84,11 @@ router.post(
 			schema: req.schema,
 		});
 
-		await service.sort(req.collection, req.body);
+		if (Array.isArray(value)) {
+			await service.sortMany(req.collection, value);
+		} else {
+			await service.sort(req.collection, value);
+		}
 
 		return res.status(200).end();
 	}),
