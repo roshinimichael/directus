@@ -1,4 +1,4 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { respond } from '../middleware/respond.js';
@@ -93,6 +93,29 @@ router.get(
 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record || null };
+		return next();
+	}),
+	respond,
+);
+
+router.patch(
+	'/read',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new ForbiddenError();
+		}
+
+		const service = new NotificationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const keys = await service.updateByQuery(
+			{ filter: { recipient: { _eq: req.accountability.user } } },
+			{ status: 'archived' },
+		);
+
+		res.locals['payload'] = { data: keys };
 		return next();
 	}),
 	respond,
