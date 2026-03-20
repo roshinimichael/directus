@@ -1,0 +1,28 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "[]",
+    "ResponseBody": "{\"errors\": [{\"message\": \"\\\"value\\\" does not match any of the allowed types\", \"extensions\": {\"code\": \"INVALID_PAYLOAD\"}}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/sort/directus_files",
+    "QueryParams": {},
+    "StatusCode": 400,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T17:52:37.877Z",
+    "Scheme": "http"
+  }
+]
