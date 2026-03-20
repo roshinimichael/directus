@@ -1,0 +1,25 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"errors\":[{\"message\":\"No token provided.\",\"extensions\":{\"code\":\"TOKEN_EXPIRED\"}}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/utils/random/uuid",
+    "QueryParams": {},
+    "StatusCode": 401,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:40:06.441Z",
+    "Scheme": "http"
+  }
+]
