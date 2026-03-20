@@ -35,7 +35,11 @@ export class UtilsService {
 	}
 
 	private async _validateSortAccess(collection: string, sortField: string): Promise<void> {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability) {
+			throw new ForbiddenError();
+		}
+
+		if (this.accountability.admin !== true) {
 			await validateAccess(
 				{
 					accountability: this.accountability,
