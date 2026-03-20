@@ -91,6 +91,31 @@ router.get(
 	respond,
 );
 
+router.get(
+	'/stats',
+	asyncHandler(async (req, res) => {
+		if (!req.accountability?.admin) {
+			throw new ForbiddenError();
+		}
+
+		const memoryUsage = process.memoryUsage();
+
+		return res.json({
+			data: {
+				node_version: process.version,
+				uptime_seconds: process.uptime(),
+				memory: {
+					rss: memoryUsage.rss,
+					heap_total: memoryUsage.heapTotal,
+					heap_used: memoryUsage.heapUsed,
+					external: memoryUsage.external,
+				},
+				pid: process.pid,
+			},
+		});
+	}),
+);
+
 router.post(
 	'/setup',
 	asyncHandler(async (req, _res, next) => {
