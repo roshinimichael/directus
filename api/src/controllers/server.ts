@@ -56,6 +56,11 @@ if (env['GRAPHQL_INTROSPECTION'] !== false) {
 	);
 }
 
+router.get('/ping', (_req, res) => {
+	res.setHeader('Cache-Control', 'no-store');
+	return res.json({ data: 'pong', uptime: process.uptime() });
+});
+
 router.get(
 	'/info',
 	asyncHandler(async (req, res, next) => {
