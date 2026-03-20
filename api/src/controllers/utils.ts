@@ -1,4 +1,9 @@
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import {
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidQueryError,
+	UnsupportedMediaTypeError,
+} from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -35,6 +40,10 @@ router.get(
 router.post(
 	'/hash/generate',
 	asyncHandler(async (req, res) => {
+		if (!req.accountability) {
+			throw new InvalidCredentialsError();
+		}
+
 		if (req.body?.strings !== undefined) {
 			if (!Array.isArray(req.body.strings) || req.body.strings.length === 0) {
 				throw new InvalidPayloadError({ reason: `"strings" must be a non-empty array` });
