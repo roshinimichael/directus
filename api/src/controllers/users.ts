@@ -182,6 +182,65 @@ router.patch(
 	respond,
 );
 
+router.get(
+	'/me/sessions',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const { createHash } = await import('node:crypto');
+		const database = getDatabase();
+
+		const sessions = await database
+			.select('token', 'expires', 'ip', 'user_agent')
+			.from('directus_sessions')
+			.where({ user: req.accountability.user })
+			.where('expires', '>', new Date());
+
+		const currentSession = req.accountability.session;
+
+		const result = sessions.map((session: any) => ({
+			id: createHash('sha256').update(session.token).digest('hex').substring(0, 32),
+			expires: session.expires,
+			ip: session.ip ?? null,
+			user_agent: session.user_agent ?? null,
+			is_current: currentSession === session.token,
+		}));
+
+		res.locals['payload'] = { data: result };
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/me/sessions/:id',
+	asyncHandler(async (req, _res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const { createHash } = await import('node:crypto');
+		const database = getDatabase();
+
+		const sessions = await database.select('token').from('directus_sessions').where({ user: req.accountability.user });
+
+		const target = sessions.find((session: any) => {
+			const id = createHash('sha256').update(session.token).digest('hex').substring(0, 32);
+			return id === req.params['id'];
+		});
+
+		if (!target) {
+			throw new ForbiddenError();
+		}
+
+		await database('directus_sessions').where({ token: target.token }).delete();
+		return next();
+	}),
+	respond,
+);
+
 router.patch(
 	'/',
 	validateBatch('update'),

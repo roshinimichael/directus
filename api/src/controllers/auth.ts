@@ -3,6 +3,7 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
 import { Router } from 'express';
+import jwt from 'jsonwebtoken';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -244,6 +245,41 @@ router.post(
 
 		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/token/info',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidPayloadError({ reason: 'No active session' });
+		}
+
+		const accountability = req.accountability;
+
+		let expiresAt: Date | null = null;
+
+		if (req.token && isDirectusJWT(req.token)) {
+			const decoded = jwt.decode(req.token) as { exp?: number } | null;
+
+			if (decoded?.exp) {
+				expiresAt = new Date(decoded.exp * 1000);
+			}
+		}
+
+		res.locals['payload'] = {
+			data: {
+				user: accountability.user,
+				role: accountability.role,
+				roles: accountability.roles,
+				admin_access: accountability.admin,
+				app_access: accountability.app,
+				expires_at: expiresAt,
+			},
+		};
+
 		return next();
 	}),
 	respond,
