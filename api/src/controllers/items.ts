@@ -95,6 +95,29 @@ router.search('/:collection', collectionExists, validateBatch('read'), readHandl
 router.get('/:collection', collectionExists, readHandler, respond);
 
 router.get(
+	'/:collection/count',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+
+		if (req.singleton) {
+			throw new RouteNotFoundError({ path: req.path });
+		}
+
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const count = await metaService.filterCount(req.collection, req.sanitizedQuery);
+
+		res.locals['payload'] = { data: { count } };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
