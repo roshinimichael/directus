@@ -1,0 +1,80 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"export_test_items\", \"meta\": {\"icon\": \"box\", \"note\": \"Test collection for export workflow\"}, \"schema\": {\"name\": \"export_test_items\"}}",
+    "ResponseBody": "{\"data\": {\"collection\": \"export_test_items\", \"meta\": {\"icon\": \"box\", \"note\": \"Test collection for export workflow\"}, \"schema\": {\"name\": \"export_test_items\"}}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-16T21:05:25.274Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"title\": \"Sample Export Item\", \"status\": \"published\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"title\": \"Sample Export Item\", \"status\": \"published\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/export_test_items",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-16T21:05:29.821Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"format\": \"json\", \"fields\": [\"id\", \"title\", \"status\"]}",
+    "ResponseBody": "{\"data\": [{\"id\": 1, \"title\": \"Sample Export Item\", \"status\": \"published\"}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/exports/export_test_items",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-16T21:05:34.717Z",
+    "Scheme": "http"
+  }
+]
