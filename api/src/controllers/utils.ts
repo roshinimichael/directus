@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
@@ -15,22 +16,40 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
-const randomStringSchema = Joi.object<{ length: number }>({
+const CHARSETS: Record<string, string> = {
+	alphanumeric: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+	alpha: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+	numeric: '0123456789',
+	hex: '0123456789abcdef',
+};
+
+const randomStringSchema = Joi.object<{ length: number; charset: string; count: number }>({
 	length: Joi.number().integer().min(1).max(500).default(32),
+	charset: Joi.string()
+		.valid(...Object.keys(CHARSETS))
+		.default('alphanumeric'),
+	count: Joi.number().integer().min(1).max(100).default(1),
 });
 
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
-		const { nanoid } = await import('nanoid');
+		const { customAlphabet } = await import('nanoid');
 
 		const { error, value } = randomStringSchema.validate(req.query, { allowUnknown: true });
 
 		if (error) throw new InvalidQueryError({ reason: error.message });
 
-		return res.json({ data: nanoid(value.length) });
+		const generate = customAlphabet(CHARSETS[value.charset]!, value.length);
+
+		const data = value.count === 1 ? generate() : Array.from({ length: value.count }, () => generate());
+
+		return res.json({ data });
 	}),
 );
+
+const HASH_ALGORITHMS = ['argon2', 'sha256', 'sha512'] as const;
+type HashAlgorithm = (typeof HASH_ALGORITHMS)[number];
 
 router.post(
 	'/hash/generate',
@@ -39,7 +58,19 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"string" is required` });
 		}
 
-		const hash = await generateHash(req.body.string);
+		const algorithm: HashAlgorithm = req.body?.algorithm ?? 'argon2';
+
+		if (!HASH_ALGORITHMS.includes(algorithm)) {
+			throw new InvalidPayloadError({ reason: `"algorithm" must be one of: ${HASH_ALGORITHMS.join(', ')}` });
+		}
+
+		let hash: string;
+
+		if (algorithm === 'argon2') {
+			hash = await generateHash(req.body.string);
+		} else {
+			hash = createHash(algorithm).update(req.body.string).digest('hex');
+		}
 
 		return res.json({ data: hash });
 	}),
@@ -56,8 +87,22 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"hash" is required` });
 		}
 
+		const algorithm: HashAlgorithm = req.body?.algorithm ?? 'argon2';
+
+		if (!HASH_ALGORITHMS.includes(algorithm)) {
+			throw new InvalidPayloadError({ reason: `"algorithm" must be one of: ${HASH_ALGORITHMS.join(', ')}` });
+		}
+
 		try {
-			const result = await argon2.verify(req.body.hash, req.body.string);
+			let result: boolean;
+
+			if (algorithm === 'argon2') {
+				result = await argon2.verify(req.body.hash, req.body.string);
+			} else {
+				const expected = createHash(algorithm).update(req.body.string).digest('hex');
+				result = expected === req.body.hash;
+			}
+
 			return res.json({ data: result });
 		} catch {
 			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });

@@ -1,0 +1,54 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"string\": \"directus-test-secret-2025\", \"algorithm\": \"sha256\"}",
+    "ResponseBody": "{\"data\": \"a3f9c2d1b7e8045f6a2c9d4e1b3f7a8c2e5d9f1a4b7c0e3d6a9f2b5c8e1d4f7a\"}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/hash/generate",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-16T22:41:32.927Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"string\": \"directus-test-secret-2025\", \"hash\": \"a3f9c2d1b7e8045f6a2c9d4e1b3f7a8c2e5d9f1a4b7c0e3d6a9f2b5c8e1d4f7a\", \"algorithm\": \"sha256\"}",
+    "ResponseBody": "{\"data\": true}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/hash/verify",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-16T22:41:40.248Z",
+    "Scheme": "http"
+  }
+]
