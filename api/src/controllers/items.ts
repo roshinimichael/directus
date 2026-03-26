@@ -116,6 +116,26 @@ router.get(
 	respond,
 );
 
+router.head(
+	'/:collection/:pk',
+	collectionExists,
+	asyncHandler(async (req, res) => {
+		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		try {
+			const result = await service.readOne(req.params['pk']!, { fields: ['id'] });
+			return result ? res.status(204).end() : res.status(404).end();
+		} catch {
+			return res.status(404).end();
+		}
+	}),
+);
+
 router.patch(
 	'/:collection',
 	collectionExists,
