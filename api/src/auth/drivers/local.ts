@@ -6,6 +6,7 @@ import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
+import checkLoginRateLimit from '../../middleware/rate-limiter-login.js';
 import { respond } from '../../middleware/respond.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -59,6 +60,7 @@ export function createLocalAuthRouter(provider: string): Router {
 
 	router.post(
 		'/',
+		checkLoginRateLimit,
 		asyncHandler(async (req, res, next) => {
 			const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 			const timeStart = performance.now();
