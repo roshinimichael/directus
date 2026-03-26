@@ -32,6 +32,14 @@ router.get(
 	}),
 );
 
+router.get(
+	'/random/uuid',
+	asyncHandler(async (_req, res) => {
+		const { randomUUID } = await import('crypto');
+		return res.json({ data: randomUUID() });
+	}),
+);
+
 router.post(
 	'/hash/generate',
 	asyncHandler(async (req, res) => {
