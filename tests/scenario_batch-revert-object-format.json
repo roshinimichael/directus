@@ -1,0 +1,116 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"email\": \"test-revert-1742428800@example.com\", \"password\": \"Test1234!\", \"first_name\": \"Revert\", \"last_name\": \"Test\", \"status\": \"active\"}",
+    "ResponseBody": "{\"data\": {\"id\": \"a1b2c3d4-1234-5678-90ab-cdef01234567\", \"email\": \"test-revert-1742428800@example.com\", \"first_name\": \"Revert\", \"last_name\": \"Test\", \"status\": \"active\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/users",
+    "QueryParams": {},
+    "StatusCode": 201,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:48:38.174Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"first_name\": \"Reverted\"}",
+    "ResponseBody": "{\"data\": {\"id\": \"a1b2c3d4-1234-5678-90ab-cdef01234567\", \"first_name\": \"Reverted\", \"last_name\": \"Test\", \"status\": \"active\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "PATCH",
+    "Path": "/users/a1b2c3d4-1234-5678-90ab-cdef01234567",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:48:51.517Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"data\": [{\"id\": 1, \"collection\": \"directus_users\", \"item\": \"a1b2c3d4-1234-5678-90ab-cdef01234567\"}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/revisions",
+    "QueryParams": {
+      "sort": [
+        "-id"
+      ],
+      "limit": [
+        "1"
+      ],
+      "filter[collection][_eq]": [
+        "directus_users"
+      ]
+    },
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:49:01.480Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"revisions\": [1]}",
+    "ResponseBody": "{}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/utils/revert",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:49:26.262Z",
+    "Scheme": "http"
+  }
+]
