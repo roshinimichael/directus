@@ -1,4 +1,5 @@
 import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { getSimpleHash } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -62,6 +63,20 @@ router.post(
 		} catch {
 			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });
 		}
+	}),
+);
+
+const simpleHashSchema = Joi.object<{ value: string; length?: number }>({
+	value: Joi.string().required(),
+	length: Joi.number().integer().min(1).max(8).optional(),
+});
+
+router.get(
+	'/hash/simple',
+	asyncHandler(async (req, res) => {
+		const { error, value } = simpleHashSchema.validate(req.query, { allowUnknown: true });
+		if (error) throw new InvalidQueryError({ reason: error.message });
+		return res.json({ data: getSimpleHash(value.value, value.length) });
 	}),
 );
 
