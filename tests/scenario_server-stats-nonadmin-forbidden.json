@@ -1,0 +1,77 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"email\": \"testnonadmin@example.com\", \"password\": \"Test123!@#\", \"first_name\": \"Test\", \"last_name\": \"NonAdmin\"}",
+    "ResponseBody": "{\"data\": {\"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\", \"email\": \"testnonadmin@example.com\", \"first_name\": \"Test\", \"last_name\": \"NonAdmin\", \"role\": null}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/users",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:49:49.481Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"email\": \"testnonadmin@example.com\", \"password\": \"Test123!@#\"}",
+    "ResponseBody": "{\"data\": {\"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test\", \"expires\": 900000, \"refresh_token\": \"somerefreshtoken\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/auth/login",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:49:58.940Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/server/stats",
+    "QueryParams": {},
+    "StatusCode": 403,
+    "Port": 8055,
+    "Timestamp": "2026-03-20T18:50:03.810Z",
+    "Scheme": "http"
+  }
+]
