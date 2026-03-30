@@ -1,0 +1,80 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"test_export_items\", \"meta\": {}, \"schema\": {}, \"fields\": [{\"field\": \"id\", \"type\": \"integer\", \"meta\": {\"hidden\": true, \"readonly\": true}, \"schema\": {\"is_primary_key\": true, \"has_auto_increment\": true}}, {\"field\": \"name\", \"type\": \"string\", \"meta\": {}, \"schema\": {}}]}",
+    "ResponseBody": "{\"data\": {\"collection\": \"test_export_items\", \"meta\": {}, \"schema\": {}}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-30T07:39:43.108Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"name\": \"exported item one\"}",
+    "ResponseBody": "{\"data\": {\"id\": 1, \"name\": \"exported item one\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/items/test_export_items",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-30T07:39:47.902Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"format\": \"json\"}",
+    "ResponseBody": "{\"data\": [{\"id\": 1, \"name\": \"exported item one\"}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/exports/test_export_items",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-03-30T07:39:53.487Z",
+    "Scheme": "http"
+  }
+]
