@@ -14,10 +14,7 @@ async function fetchServerInfo() {
 	loading.value = true;
 
 	try {
-		const [infoRes, healthRes] = await Promise.all([
-			api.get('/server/info'),
-			api.get('/server/health'),
-		]);
+		const [infoRes, healthRes] = await Promise.all([api.get('/server/info'), api.get('/server/health')]);
 
 		serverInfo.value = infoRes.data.data;
 		healthStatus.value = healthRes.data.status;
@@ -32,60 +29,52 @@ onMounted(fetchServerInfo);
 </script>
 
 <template>
-	<private-view title="Server Info" icon="dns">
+	<PrivateView title="Server Info" icon="dns">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: 'Server Info', to: '/server-info' }]" />
+			<VBreadcrumb :items="[{ name: 'Server Info', to: '/server-info' }]" />
 		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="'Refresh'" rounded icon :loading="loading" @click="fetchServerInfo">
-				<v-icon name="refresh" />
-			</v-button>
+			<VButton v-tooltip.bottom="'Refresh'" rounded icon :loading="loading" @click="fetchServerInfo">
+				<VIcon name="refresh" />
+			</VButton>
 		</template>
 
 		<div class="server-info-page">
-			<v-notice v-if="error" type="danger">{{ error }}</v-notice>
+			<VNotice v-if="error" type="danger">{{ error }}</VNotice>
 
 			<div v-if="loading && !serverInfo" class="loading">
-				<v-progress-circular indeterminate />
+				<VProgressCircular indeterminate />
 			</div>
 
 			<template v-if="serverInfo">
 				<div class="status-bar">
-					<v-chip :class="healthStatus === 'ok' ? 'healthy' : 'degraded'" small>
-						<v-icon :name="healthStatus === 'ok' ? 'check_circle' : 'warning'" small />
-						{{ healthStatus === 'ok' ? 'Healthy' : healthStatus ?? 'Unknown' }}
-					</v-chip>
+					<VChip :class="healthStatus === 'ok' ? 'healthy' : 'degraded'" small>
+						<VIcon :name="healthStatus === 'ok' ? 'check_circle' : 'warning'" small />
+						{{ healthStatus === 'ok' ? 'Healthy' : (healthStatus ?? 'Unknown') }}
+					</VChip>
 				</div>
 
-				<v-card>
-					<v-card-title>Directus</v-card-title>
-					<v-card-text>
+				<VCard>
+					<VCardTitle>Directus</VCardTitle>
+					<VCardText>
 						<dl class="info-grid">
 							<div class="info-row">
 								<dt>Version</dt>
-								<dd>{{ serverInfo.directus?.version ?? '—' }}</dd>
-							</div>
-							<div class="info-row">
-								<dt>Node.js</dt>
-								<dd>{{ serverInfo.node?.version ?? '—' }}</dd>
-							</div>
-							<div class="info-row">
-								<dt>OS</dt>
-								<dd>{{ serverInfo.os?.type ?? '—' }} {{ serverInfo.os?.version ?? '' }}</dd>
+								<dd>{{ serverInfo.version ?? '—' }}</dd>
 							</div>
 						</dl>
-					</v-card-text>
-				</v-card>
+					</VCardText>
+				</VCard>
 			</template>
 		</div>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
 .server-info-page {
 	padding: var(--content-padding);
-	max-width: 560px;
+	max-inline-size: 560px;
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -125,10 +114,10 @@ onMounted(fetchServerInfo);
 	justify-content: space-between;
 	align-items: center;
 	padding: 8px 0;
-	border-bottom: 1px solid var(--theme--border-color-subdued);
+	border-block-end: 1px solid var(--theme--border-color-subdued);
 
 	&:last-child {
-		border-bottom: none;
+		border-block-end: none;
 	}
 
 	dt {
