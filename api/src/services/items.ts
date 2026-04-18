@@ -494,6 +494,20 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		const env = useEnv();
+		const HARD_LIMIT_CAP = 50_000;
+
+		const hasMaxLimit =
+			'QUERY_LIMIT_MAX' in env &&
+			Number.isFinite(Number(env['QUERY_LIMIT_MAX'])) &&
+			Number(env['QUERY_LIMIT_MAX']) >= 0;
+
+		const effectiveMaxLimit = hasMaxLimit ? Math.min(Number(env['QUERY_LIMIT_MAX']), HARD_LIMIT_CAP) : HARD_LIMIT_CAP;
+
+		if (query.limit === -1 || (query.limit !== undefined && query.limit > effectiveMaxLimit)) {
+			query = { ...query, limit: effectiveMaxLimit };
+		}
+
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(

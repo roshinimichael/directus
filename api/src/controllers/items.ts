@@ -81,7 +81,18 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+	const rawLimit = req.query['limit'] !== undefined ? Number(req.query['limit']) : undefined;
+	const HARD_LIMIT_CAP = 50_000;
+
+	const queryWithRawLimit =
+		rawLimit !== undefined ? { ...req.sanitizedQuery, raw_limit: rawLimit } : req.sanitizedQuery;
+
+	const meta = await metaService.getMetaForQuery(req.collection, queryWithRawLimit);
+
+	if (rawLimit === -1 || (rawLimit !== undefined && rawLimit > HARD_LIMIT_CAP)) {
+		res.setHeader('X-Query-Limit-Capped', 'true');
+		res.setHeader('X-Query-Limit-Effective', String(HARD_LIMIT_CAP));
+	}
 
 	res.locals['payload'] = {
 		meta: meta,

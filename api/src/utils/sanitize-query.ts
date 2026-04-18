@@ -25,20 +25,24 @@ export async function sanitizeQuery(
 
 	const query: Query = {};
 
+	const HARD_LIMIT_CAP = 50_000;
+
 	const hasMaxLimit =
 		'QUERY_LIMIT_MAX' in env &&
 		Number(env['QUERY_LIMIT_MAX']) >= 0 &&
 		!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
 		Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
 
+	const effectiveMaxLimit = hasMaxLimit ? Math.min(Number(env['QUERY_LIMIT_MAX']), HARD_LIMIT_CAP) : HARD_LIMIT_CAP;
+
 	if (rawQuery['limit'] !== undefined) {
 		const limit = sanitizeLimit(rawQuery['limit']);
 
 		if (typeof limit === 'number') {
-			query.limit = limit === -1 && hasMaxLimit ? Number(env['QUERY_LIMIT_MAX']) : limit;
+			query.limit = limit === -1 || limit > effectiveMaxLimit ? effectiveMaxLimit : limit;
 		}
 	} else if (hasMaxLimit) {
-		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), Number(env['QUERY_LIMIT_MAX']));
+		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), effectiveMaxLimit);
 	}
 
 	if (rawQuery['fields']) {
