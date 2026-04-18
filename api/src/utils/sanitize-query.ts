@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import { QUERY_HARD_LIMIT_CAP } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -25,15 +26,15 @@ export async function sanitizeQuery(
 
 	const query: Query = {};
 
-	const HARD_LIMIT_CAP = 50_000;
-
 	const hasMaxLimit =
 		'QUERY_LIMIT_MAX' in env &&
 		Number(env['QUERY_LIMIT_MAX']) >= 0 &&
 		!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
 		Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
 
-	const effectiveMaxLimit = hasMaxLimit ? Math.min(Number(env['QUERY_LIMIT_MAX']), HARD_LIMIT_CAP) : HARD_LIMIT_CAP;
+	const effectiveMaxLimit = hasMaxLimit
+		? Math.min(Number(env['QUERY_LIMIT_MAX']), QUERY_HARD_LIMIT_CAP)
+		: QUERY_HARD_LIMIT_CAP;
 
 	if (rawQuery['limit'] !== undefined) {
 		const limit = sanitizeLimit(rawQuery['limit']);

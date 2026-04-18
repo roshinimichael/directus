@@ -20,6 +20,7 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
+import { QUERY_HARD_LIMIT_CAP } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -495,14 +496,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		const env = useEnv();
-		const HARD_LIMIT_CAP = 50_000;
 
 		const hasMaxLimit =
 			'QUERY_LIMIT_MAX' in env &&
 			Number.isFinite(Number(env['QUERY_LIMIT_MAX'])) &&
 			Number(env['QUERY_LIMIT_MAX']) >= 0;
 
-		const effectiveMaxLimit = hasMaxLimit ? Math.min(Number(env['QUERY_LIMIT_MAX']), HARD_LIMIT_CAP) : HARD_LIMIT_CAP;
+		const effectiveMaxLimit = hasMaxLimit
+			? Math.min(Number(env['QUERY_LIMIT_MAX']), QUERY_HARD_LIMIT_CAP)
+			: QUERY_HARD_LIMIT_CAP;
 
 		if (query.limit === -1 || (query.limit !== undefined && query.limit > effectiveMaxLimit)) {
 			query = { ...query, limit: effectiveMaxLimit };
