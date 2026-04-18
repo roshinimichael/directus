@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useApi } from '@directus/composables';
 import { Filter } from '@directus/types';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import VBadge from '@/components/v-badge.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -16,11 +18,39 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:filter']);
 
+const api = useApi();
 const userStore = useUserStore();
 const currentUserID = computed(() => userStore.currentUser?.id);
 
 const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
 const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
+
+const counts = ref<Record<string, number>>({
+	create: 0,
+	update: 0,
+	delete: 0,
+	login: 0,
+	logout: 0,
+});
+
+async function fetchCounts() {
+	const actions = ['create', 'update', 'delete', 'login', 'logout'];
+
+	const results = await Promise.all(
+		actions.map((action) =>
+			api
+				.get('/activity', {
+					params: { aggregate: { count: ['*'] }, filter: { action: { _eq: action } }, limit: -1 },
+				})
+				.then((res) => ({ action, count: Number(res.data.data?.[0]?.count ?? 0) }))
+				.catch(() => ({ action, count: 0 })),
+		),
+	);
+
+	for (const { action, count } of results) {
+		counts.value[action] = count;
+	}
+}
 
 function setNavFilter(key: string, value: any) {
 	emit('update:filter', {
@@ -33,6 +63,8 @@ function setNavFilter(key: string, value: any) {
 function clearNavFilter() {
 	emit('update:filter', null);
 }
+
+onMounted(fetchCounts);
 </script>
 
 <template>
@@ -67,7 +99,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'create')"
 		>
 			<VListItemIcon>
-				<VIcon name="add" />
+				<VBadge :value="counts.create" :max="999">
+					<VIcon name="add" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('create')" />
@@ -80,7 +114,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'update')"
 		>
 			<VListItemIcon>
-				<VIcon name="check" />
+				<VBadge :value="counts.update" :max="999">
+					<VIcon name="check" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('update')" />
@@ -93,7 +129,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'delete')"
 		>
 			<VListItemIcon>
-				<VIcon name="clear" />
+				<VBadge :value="counts.delete" :max="999">
+					<VIcon name="clear" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('delete_label')" />
@@ -106,7 +144,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'login')"
 		>
 			<VListItemIcon>
-				<VIcon name="login" />
+				<VBadge :value="counts.login" :max="999">
+					<VIcon name="login" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('login')" />
@@ -119,7 +159,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'logout')"
 		>
 			<VListItemIcon>
-				<VIcon name="logout" />
+				<VBadge :value="counts.logout" :max="999">
+					<VIcon name="logout" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('logout')" />
