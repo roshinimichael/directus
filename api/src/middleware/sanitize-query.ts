@@ -30,16 +30,15 @@ const sanitizeQueryMiddleware: RequestHandler = async (req, res, next) => {
 			req.accountability || null,
 		);
 
-		// Embed the original (pre-cap) limit so MetaService can detect capping downstream.
-		// sanitizeQuery caps limit=-1 and limit>max to effectiveMaxLimit, so we preserve the
-		// raw value here to allow controllers and MetaService to signal capping to clients.
+		validateQuery(req.sanitizedQuery);
+
+		// Embed the original (pre-cap) limit AFTER validateQuery so the unknown field
+		// doesn't trigger INVALID_QUERY. MetaService reads raw_limit to detect capping.
 		if (rawLimit !== undefined) {
 			(req.sanitizedQuery as any).raw_limit = rawLimit;
 		}
 
 		Object.freeze(req.sanitizedQuery);
-
-		validateQuery(req.sanitizedQuery);
 
 		if (rawLimit === -1 || (rawLimit !== undefined && rawLimit > QUERY_HARD_LIMIT_CAP)) {
 			res.setHeader('X-Query-Limit-Capped', 'true');
