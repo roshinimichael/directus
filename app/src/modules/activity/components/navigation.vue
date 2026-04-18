@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { computed } from 'vue';
+import VBadge from '@/components/v-badge.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -8,6 +9,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useActivityCounts } from '@/composables/use-activity-counts';
 import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
@@ -21,6 +23,8 @@ const currentUserID = computed(() => userStore.currentUser?.id);
 
 const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
 const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
+
+const { counts } = useActivityCounts();
 
 function setNavFilter(key: string, value: any) {
 	emit('update:filter', {
@@ -67,7 +71,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'create')"
 		>
 			<VListItemIcon>
-				<VIcon name="add" />
+				<VBadge :value="counts.create" :max="999">
+					<VIcon name="add" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('create')" />
@@ -80,7 +86,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'update')"
 		>
 			<VListItemIcon>
-				<VIcon name="check" />
+				<VBadge :value="counts.update" :max="999">
+					<VIcon name="check" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('update')" />
@@ -93,7 +101,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'delete')"
 		>
 			<VListItemIcon>
-				<VIcon name="clear" />
+				<VBadge :value="counts.delete" :max="999">
+					<VIcon name="clear" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('delete_label')" />
@@ -106,7 +116,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'login')"
 		>
 			<VListItemIcon>
-				<VIcon name="login" />
+				<VBadge :value="counts.login" :max="999">
+					<VIcon name="login" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('login')" />
@@ -119,7 +131,9 @@ function clearNavFilter() {
 			@click="setNavFilter('action', 'logout')"
 		>
 			<VListItemIcon>
-				<VIcon name="logout" />
+				<VBadge :value="counts.logout" :max="999">
+					<VIcon name="logout" />
+				</VBadge>
 			</VListItemIcon>
 			<VListItemContent>
 				<VTextOverflow :text="$t('logout')" />
