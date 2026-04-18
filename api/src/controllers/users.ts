@@ -211,7 +211,7 @@ router.get(
 
 		const data = sessions.map((s) => ({
 			id: createHash('sha256')
-				.update(s.expires.toISOString() + s.ip + s.user_agent)
+				.update(new Date(s.expires).toISOString() + s.ip + s.user_agent)
 				.digest('hex')
 				.slice(0, 16),
 			ip: s.ip ?? null,
@@ -244,7 +244,7 @@ router.delete(
 		const match = sessions.find(
 			(s) =>
 				createHash('sha256')
-					.update(s.expires.toISOString() + s.ip + s.user_agent)
+					.update(new Date(s.expires).toISOString() + s.ip + s.user_agent)
 					.digest('hex')
 					.slice(0, 16) === req.params['id'],
 		);
