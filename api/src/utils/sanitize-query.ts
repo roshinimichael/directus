@@ -3,6 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import { QUERY_HARD_LIMIT_CAP } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -31,14 +32,18 @@ export async function sanitizeQuery(
 		!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
 		Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
 
+	const effectiveMaxLimit = hasMaxLimit
+		? Math.min(Number(env['QUERY_LIMIT_MAX']), QUERY_HARD_LIMIT_CAP)
+		: QUERY_HARD_LIMIT_CAP;
+
 	if (rawQuery['limit'] !== undefined) {
 		const limit = sanitizeLimit(rawQuery['limit']);
 
 		if (typeof limit === 'number') {
-			query.limit = limit === -1 && hasMaxLimit ? Number(env['QUERY_LIMIT_MAX']) : limit;
+			query.limit = limit === -1 || limit > effectiveMaxLimit ? effectiveMaxLimit : limit;
 		}
 	} else if (hasMaxLimit) {
-		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), Number(env['QUERY_LIMIT_MAX']));
+		query.limit = Math.min(Number(env['QUERY_LIMIT_DEFAULT']), effectiveMaxLimit);
 	}
 
 	if (rawQuery['fields']) {
