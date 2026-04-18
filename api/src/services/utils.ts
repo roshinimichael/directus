@@ -34,32 +34,34 @@ export class UtilsService {
 		return sortField;
 	}
 
-	private async _validateSortAccess(collection: string, sortField: string): Promise<void> {
+	private _checkAuthenticated(): void {
 		if (!this.accountability) {
 			throw new ForbiddenError();
 		}
+	}
 
-		if (this.accountability.admin !== true) {
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection,
-				},
-				{
-					schema: this.schema,
-					knex: this.knex,
-				},
-			);
+	private async _validateSortAccess(collection: string, sortField: string): Promise<void> {
+		if (this.accountability!.admin === true) return;
 
-			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'update', accountability: this.accountability },
-				{ schema: this.schema, knex: this.knex },
-			);
+		await validateAccess(
+			{
+				accountability: this.accountability!,
+				action: 'update',
+				collection,
+			},
+			{
+				schema: this.schema,
+				knex: this.knex,
+			},
+		);
 
-			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
-				throw new ForbiddenError();
-			}
+		const allowedFields = await fetchAllowedFields(
+			{ collection, action: 'update', accountability: this.accountability! },
+			{ schema: this.schema, knex: this.knex },
+		);
+
+		if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
+			throw new ForbiddenError();
 		}
 	}
 
@@ -152,6 +154,7 @@ export class UtilsService {
 	}
 
 	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
+		this._checkAuthenticated();
 		const sortField = await this._getSortField(collection);
 		await this._validateSortAccess(collection, sortField);
 
@@ -184,6 +187,7 @@ export class UtilsService {
 	async sortMany(collection: string, moves: Array<{ item: PrimaryKey; to: PrimaryKey }>): Promise<void> {
 		if (moves.length === 0) return;
 
+		this._checkAuthenticated();
 		const sortField = await this._getSortField(collection);
 		await this._validateSortAccess(collection, sortField);
 
