@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useApi } from '@directus/composables';
 import { Filter } from '@directus/types';
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import VBadge from '@/components/v-badge.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,6 +9,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useActivityCounts } from '@/composables/use-activity-counts';
 import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
@@ -18,39 +18,13 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:filter']);
 
-const api = useApi();
 const userStore = useUserStore();
 const currentUserID = computed(() => userStore.currentUser?.id);
 
 const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
 const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
 
-const counts = ref<Record<string, number>>({
-	create: 0,
-	update: 0,
-	delete: 0,
-	login: 0,
-	logout: 0,
-});
-
-async function fetchCounts() {
-	const actions = ['create', 'update', 'delete', 'login', 'logout'];
-
-	const results = await Promise.all(
-		actions.map((action) =>
-			api
-				.get('/activity', {
-					params: { aggregate: { count: ['*'] }, filter: { action: { _eq: action } }, limit: -1 },
-				})
-				.then((res) => ({ action, count: Number(res.data.data?.[0]?.count ?? 0) }))
-				.catch(() => ({ action, count: 0 })),
-		),
-	);
-
-	for (const { action, count } of results) {
-		counts.value[action] = count;
-	}
-}
+const { counts } = useActivityCounts();
 
 function setNavFilter(key: string, value: any) {
 	emit('update:filter', {
@@ -63,8 +37,6 @@ function setNavFilter(key: string, value: any) {
 function clearNavFilter() {
 	emit('update:filter', null);
 }
-
-onMounted(fetchCounts);
 </script>
 
 <template>
