@@ -40,7 +40,7 @@ export default defineModule({
 		{
 			name: 'settings-data-model-redirect',
 			path: '',
-			redirect: '/settings/data-model',
+			redirect: '/settings/schema',
 		},
 		{
 			name: 'settings-project',
