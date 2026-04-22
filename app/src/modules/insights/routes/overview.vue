@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import InsightsNavigation from '../components/navigation.vue';
 import api from '@/api';
-import VButton from '@/components/v-button.vue';
+import VOldButton from '@/components/v-old-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
@@ -256,12 +256,12 @@ async function batchDelete() {
 					<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
 					<VCardActions>
-						<VButton secondary @click="confirmBatchDelete = false">
-							{{ $t('cancel') }}
-						</VButton>
-						<VButton kind="danger" :loading="batchDeleting" @click="batchDelete">
-							{{ $t('delete_label') }}
-						</VButton>
+						<VOldButton type="normal" @click="confirmBatchDelete = false">
+							<template #default>{{ $t('cancel') }}</template>
+						</VOldButton>
+						<VOldButton type="danger" :loading="batchDeleting" @click="batchDelete">
+							<template #default>{{ $t('delete_label') }}</template>
+						</VOldButton>
 					</VCardActions>
 				</VCard>
 			</VDialog>
@@ -369,7 +369,7 @@ async function batchDelete() {
 			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
+				<VOldButton type="normal" @click="search = null"><template #default>{{ $t('clear_filters') }}</template></VOldButton>
 			</template>
 		</VInfo>
 
@@ -379,9 +379,9 @@ async function batchDelete() {
 			<template v-if="createAllowed" #append>
 				<DashboardDialog v-model="createDialogActive">
 					<template #activator="{ on }">
-						<VButton v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')" @click="on">
-							{{ $t('create_dashboard') }}
-						</VButton>
+						<VOldButton type="normal" @click="on">
+							<template #default>{{ $t('create_dashboard') }}</template>
+						</VOldButton>
 					</template>
 				</DashboardDialog>
 			</template>
@@ -392,12 +392,12 @@ async function batchDelete() {
 				<VCardTitle>{{ $t('dashboard_delete_confirm') }}</VCardTitle>
 
 				<VCardActions>
-					<VButton secondary @click="confirmDelete = null">
-						{{ $t('cancel') }}
-					</VButton>
-					<VButton danger :loading="deletingDashboard" @click="deleteDashboard">
-						{{ $t('delete_label') }}
-					</VButton>
+					<VOldButton type="normal" @click="confirmDelete = null">
+						<template #default>{{ $t('cancel') }}</template>
+					</VOldButton>
+					<VOldButton type="danger" :loading="deletingDashboard" @click="deleteDashboard">
+						<template #default>{{ $t('delete_label') }}</template>
+					</VOldButton>
 				</VCardActions>
 			</VCard>
 		</VDialog>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import VButton from '@/components/v-button.vue';
+import VOldButton from '@/components/v-old-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -28,9 +28,9 @@ const navItems = computed(() =>
 
 <template>
 	<VList nav>
-		<VButton v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
-			{{ $t('create_dashboard') }}
-		</VButton>
+		<VOldButton v-if="navItems.length === 0 && createAllowed" type="normal" @click="$emit('create')">
+			<template #default>{{ $t('create_dashboard') }}</template>
+		</VOldButton>
 
 		<VListItem v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
 			<VListItemIcon><VIcon :name="navItem.icon" :color="navItem.color" /></VListItemIcon>

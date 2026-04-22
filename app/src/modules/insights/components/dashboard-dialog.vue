@@ -2,7 +2,7 @@
 import { isEqual } from 'lodash';
 import { computed, reactive, ref, watch } from 'vue';
 import api from '@/api';
-import VButton from '@/components/v-button.vue';
+import VOldButton from '@/components/v-old-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -104,12 +104,12 @@ async function save() {
 			</VCardText>
 
 			<VCardActions>
-				<VButton secondary @click="cancel">
-					{{ $t('cancel') }}
-				</VButton>
-				<VButton :disabled="isSaveDisabled" :loading="saving" @click="save">
-					{{ $t('save') }}
-				</VButton>
+				<VOldButton type="normal" @click="cancel">
+					<template #default>{{ $t('cancel') }}</template>
+				</VOldButton>
+				<VOldButton type="normal" :disabled="isSaveDisabled" :loading="saving" @click="save">
+					<template #default>{{ $t('save') }}</template>
+				</VOldButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>
