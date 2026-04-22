@@ -588,59 +588,59 @@ async function downloadFiles() {
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
+  --v-button-background-color-hover: var(--theme--danger) !important;
+  --v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--theme--foreground);
+  --v-button-color-disabled: var(--theme--foreground);
 }
 
 .drop-border {
-	position: fixed;
-	z-index: 500;
-	background-color: var(--theme--primary);
+  background-color: var(--theme--primary);
+  position: fixed;
+  z-index: 500;
 
-	&.top,
-	&.bottom {
-		inline-size: 100%;
-		block-size: 0.25rem;
-	}
+  &.bottom,
+  &.top {
+    inline-size: 100%;
+    block-size: 0.25rem;
+  }
 
-	&.left,
-	&.right {
-		inline-size: 0.25rem;
-		block-size: 100%;
-	}
+  &.left,
+  &.right {
+    inline-size: 0.25rem;
+    block-size: 100%;
+  }
 
-	&.top {
-		inset-block-start: 0;
-		inset-inline-start: 0;
-	}
+  &.top {
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
 
-	&.right {
-		inset-block-start: 0;
-		inset-inline-end: 0;
-	}
+  &.right {
+    inset-block-start: 0;
+    inset-inline-end: 0;
+  }
 
-	&.bottom {
-		inset-block-end: 0;
-		inset-inline-start: 0;
-	}
+  &.bottom {
+    inset-block-end: 0;
+    inset-inline-start: 0;
+  }
 
-	&.left {
-		inset-block-start: 0;
-		inset-inline-start: 0;
-	}
+  &.left {
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
 }
 
 .dragging {
-	:deep(*) {
-		pointer-events: none;
-	}
+  :deep(*) {
+    pointer-events: none;
+  }
 
-	:deep([data-dropzone]) {
-		pointer-events: all;
-	}
+  :deep([data-dropzone]) {
+    pointer-events: all;
+  }
 }
 </style>

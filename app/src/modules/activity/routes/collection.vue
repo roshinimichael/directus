@@ -76,10 +76,10 @@ const roleFilter = ref<Filter | null>(null);
 
 <style lang="scss" scoped>
 .content {
-	padding: var(--content-padding);
+  padding: var(--content-padding);
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--theme--foreground);
+  --v-button-color-disabled: var(--theme--foreground);
 }
 </style>
