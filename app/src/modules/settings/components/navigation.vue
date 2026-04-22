@@ -31,7 +31,7 @@ const links = computed<Link[][]>(() => [
 		{
 			icon: 'database',
 			name: t('settings_data_model'),
-			to: `/settings/data-model`,
+			to: `/settings/schema`,
 		},
 		{
 			icon: 'bolt',
