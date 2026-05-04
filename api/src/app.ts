@@ -51,6 +51,7 @@ import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
+import exportsRouter from './controllers/exports.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
@@ -358,6 +359,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
+	app.use('/exports', exportsRouter);
 	app.use(extensionManager.getEndpointRouter());
 	await emitter.emitInit('routes.custom.after', { app });
 
