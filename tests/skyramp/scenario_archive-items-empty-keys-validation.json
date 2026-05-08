@@ -1,0 +1,54 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"test_archive_validation\", \"meta\": {}, \"schema\": {}, \"fields\": [{\"field\": \"id\", \"type\": \"integer\", \"schema\": {\"is_primary_key\": true, \"has_auto_increment\": true}, \"meta\": {\"hidden\": true}}, {\"field\": \"status\", \"type\": \"string\", \"schema\": {}, \"meta\": {}}]}",
+    "ResponseBody": "{\"data\": {\"collection\": \"test_archive_validation\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-05-08T18:42:56.959Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"keys\": []}",
+    "ResponseBody": "{\"errors\": [{\"message\": \"'keys' must be a non-empty array of primary keys.\"}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "PATCH",
+    "Path": "/archive/test_archive_validation",
+    "QueryParams": {},
+    "StatusCode": 400,
+    "Port": 8055,
+    "Timestamp": "2026-05-08T18:42:56.959Z",
+    "Scheme": "http"
+  }
+]

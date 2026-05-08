@@ -1,0 +1,23 @@
+# Skyramp Workspace Configuration
+workspace:
+  repoName: roshinimichael/directus
+  repoUrl: https://github.com/roshinimichael/directus
+metadata:
+  schemaVersion: v1
+  mcpVersion: 0.1.5
+  executorVersion: v1.3.23
+  createdAt: "2026-05-08T18:39:17.103Z"
+  updatedAt: "2026-05-08T18:39:17.110Z"
+services:
+  - serviceName: directus
+    language: python
+    framework: pytest
+    testDirectory: tests/skyramp
+    api:
+      authType: bearer
+      authHeader: Authorization
+      baseUrl: http://localhost:8055
+    runtimeDetails:
+      serverStartCommand: docker compose -f docker-compose.testbot.yml up -d directus
+      runtime: docker
+      dockerNetwork: directus_default
