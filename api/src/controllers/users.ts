@@ -16,6 +16,7 @@ import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
+import { NotificationsService } from '../services/notifications.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -107,12 +108,24 @@ router.get(
 			schema: req.schema,
 		});
 
+		const notificationsService = new NotificationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const [unreadResult] = await notificationsService.readByQuery({
+			aggregate: { count: ['*'] },
+			filter: { recipient: { _eq: req.accountability.user }, status: { _eq: 'inbox' } },
+		});
+
+		const unreadCount = Number(unreadResult?.['count'] ?? 0);
+
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
-			res.locals['payload'] = { data: item || null };
+			res.locals['payload'] = { data: { ...(item ?? {}), unread_notifications: unreadCount } };
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				res.locals['payload'] = { data: { id: req.accountability.user } };
+				res.locals['payload'] = { data: { id: req.accountability.user, unread_notifications: unreadCount } };
 				return next();
 			}
 
