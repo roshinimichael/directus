@@ -1,0 +1,54 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"collection\": \"test_archive_validate\", \"fields\": [{\"field\": \"id\", \"type\": \"integer\", \"schema\": {\"is_primary_key\": true, \"has_auto_increment\": true}, \"meta\": {}}, {\"field\": \"status\", \"type\": \"string\", \"schema\": {\"default_value\": \"draft\"}, \"meta\": {}}], \"schema\": {}, \"meta\": {}}",
+    "ResponseBody": "{\"data\": {\"collection\": \"test_archive_validate\"}}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "POST",
+    "Path": "/collections",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8055,
+    "Timestamp": "2026-05-18T08:45:34.673Z",
+    "Scheme": "http"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "{\"keys\": []}",
+    "ResponseBody": "{\"errors\": [{\"message\": \"\\\"keys\\\" must be a non-empty array of primary keys.\", \"extensions\": {\"code\": \"INVALID_PAYLOAD\"}}]}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Bearer SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "PATCH",
+    "Path": "/archive/test_archive_validate",
+    "QueryParams": {},
+    "StatusCode": 400,
+    "Port": 8055,
+    "Timestamp": "2026-05-18T08:45:34.673Z",
+    "Scheme": "http"
+  }
+]
