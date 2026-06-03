@@ -79,8 +79,51 @@ test('sorting of json array field uses first element', async () => {
 
 	const rawQuery = tracker.history.all[0]!;
 
-	expect(rawQuery.sql).toEqual(`select * order by json_extract("articles"."tags", '$[0]') asc`);
-	expect(rawQuery.bindings).toEqual([]);
+	expect(rawQuery.sql).toEqual(
+		`select * order by CASE WHEN json_extract("articles"."tags", ?) IS NULL THEN 1 ELSE 0 END asc, json_extract("articles"."tags", ?) asc`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['$[0]', '$[0]']);
+});
+
+test('sorting of json array field desc puts empty first elements first', async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySort(db, schema, queryBuilder, ['-tags'], null, 'articles', {});
+
+	const tracker = createTracker(db);
+	tracker.on.select('*').response([]);
+
+	await queryBuilder;
+
+	const rawQuery = tracker.history.all[0]!;
+
+	expect(rawQuery.sql).toEqual(
+		`select * order by CASE WHEN json_extract("articles"."tags", ?) IS NULL THEN 0 ELSE 1 END asc, json_extract("articles"."tags", ?) desc`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['$[0]', '$[0]']);
+});
+
+test('sorting of json array field with scalar tie-breaker', async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySort(db, schema, queryBuilder, ['tags', 'title'], null, 'articles', {});
+
+	const tracker = createTracker(db);
+	tracker.on.select('*').response([]);
+
+	await queryBuilder;
+
+	const rawQuery = tracker.history.all[0]!;
+
+	expect(rawQuery.sql).toEqual(
+		`select * order by CASE WHEN json_extract("articles"."tags", ?) IS NULL THEN 1 ELSE 0 END asc, json_extract("articles"."tags", ?) asc, "articles"."title" asc`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['$[0]', '$[0]']);
 });
 
 test('sorting of id and title', async () => {

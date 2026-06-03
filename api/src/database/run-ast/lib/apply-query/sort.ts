@@ -8,6 +8,35 @@ import { addJoin } from './add-join.js';
 
 export type ColumnSortRecord = { order: 'asc' | 'desc'; column: string };
 
+/**
+ * Sort JSON array fields by their first element. Rows with a missing or empty first
+ * element are grouped at one end: last for ascending, first for descending.
+ */
+function getJsonArrayFirstElementSortRecords(
+	knex: Knex,
+	collection: string,
+	field: string,
+	order: 'asc' | 'desc',
+	schema: SchemaOverview,
+	returnRecords: boolean,
+): ColumnSortRecord[] {
+	if (returnRecords) {
+		return [{ order, column: field }];
+	}
+
+	const firstElement = getColumn(knex, collection, `json(${field},[0])`, false, schema);
+
+	const nullPlacement = knex.raw(
+		order === 'asc' ? 'CASE WHEN ?? IS NULL THEN 1 ELSE 0 END' : 'CASE WHEN ?? IS NULL THEN 0 ELSE 1 END',
+		[firstElement],
+	);
+
+	return [
+		{ order: 'asc', column: nullPlacement as any },
+		{ order, column: firstElement as any },
+	];
+}
+
 export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
@@ -22,7 +51,7 @@ export function applySort(
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
 
-	const sortRecords = sort.map((sortField) => {
+	const sortRecords = sort.flatMap((sortField) => {
 		const column: string[] = sortField.split('.');
 		let order: 'asc' | 'desc' = 'asc';
 
@@ -44,25 +73,31 @@ export function applySort(
 
 			// If the operation is countAll there is no field.
 			if (operation === 'countAll') {
-				return {
-					order,
-					column: 'countAll',
-				};
+				return [
+					{
+						order,
+						column: 'countAll',
+					},
+				];
 			}
 
 			// If the operation is a root count there is no field.
 			if (operation === 'count' && (field === '*' || !field)) {
-				return {
-					order,
-					column: 'count',
-				};
+				return [
+					{
+						order,
+						column: 'count',
+					},
+				];
 			}
 
 			// Return the column name with the operation and field name
-			return {
-				order,
-				column: returnRecords ? column[0] : `${operation}->${field}`,
-			};
+			return [
+				{
+					order,
+					column: returnRecords ? column[0] : `${operation}->${field}`,
+				},
+			];
 		}
 
 		if (column.length === 1) {
@@ -71,19 +106,19 @@ export function applySort(
 
 			if (!relation || ['m2o', 'a2o'].includes(relationType ?? '')) {
 				const field = schema.collections[collection]?.fields[column[0]!];
-				const sortableColumn = getColumn(knex, collection, column[0]!, false, schema);
 
 				if (field?.type === 'json') {
-					return {
-						order,
-						column: returnRecords ? column[0] : (sortableColumn as any),
-					};
+					return getJsonArrayFirstElementSortRecords(knex, collection, column[0]!, order, schema, returnRecords);
 				}
 
-				return {
-					order,
-					column: returnRecords ? column[0] : (sortableColumn as any),
-				};
+				const sortableColumn = getColumn(knex, collection, column[0]!, false, schema);
+
+				return [
+					{
+						order,
+						column: returnRecords ? column[0] : (sortableColumn as any),
+					},
+				];
 			}
 		}
 
@@ -114,10 +149,18 @@ export function applySort(
 			hasMultiRelationalSort = hasMultiRelational;
 		}
 
-		return {
-			order,
-			column: returnRecords ? columnPath : (getColumn(knex, alias!, field!, false, schema) as any),
-		};
+		const relatedField = schema.collections[alias!]?.fields[field!];
+
+		if (relatedField?.type === 'json') {
+			return getJsonArrayFirstElementSortRecords(knex, alias!, field!, order, schema, returnRecords);
+		}
+
+		return [
+			{
+				order,
+				column: returnRecords ? columnPath : (getColumn(knex, alias!, field!, false, schema) as any),
+			},
+		];
 	});
 
 	if (returnRecords) return { sortRecords, hasJoins, hasMultiRelationalSort };
