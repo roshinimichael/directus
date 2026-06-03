@@ -70,9 +70,19 @@ export function applySort(
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
 			if (!relation || ['m2o', 'a2o'].includes(relationType ?? '')) {
+				const field = schema.collections[collection]?.fields[column[0]!];
+				const sortableColumn = getColumn(knex, collection, column[0]!, false, schema);
+
+				if (field?.type === 'json') {
+					return {
+						order,
+						column: returnRecords ? column[0] : (sortableColumn as any),
+					};
+				}
+
 				return {
 					order,
-					column: returnRecords ? column[0] : (getColumn(knex, collection, column[0]!, false, schema) as any),
+					column: returnRecords ? column[0] : (sortableColumn as any),
 				};
 			}
 		}
