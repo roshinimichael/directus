@@ -1,7 +1,7 @@
+import { InvalidPayloadError } from '@directus/errors';
 import { Router } from 'express';
 import { WebhookService } from '../services/webhooks.js';
 import asyncHandler from '../utils/async-handler.js';
-import { InvalidPayloadError } from '@directus/errors';
 
 const router = Router();
 
@@ -26,7 +26,7 @@ router.post(
 		const webhook = await service.createOne({ url, method, collections });
 
 		res.status(201).json({ data: webhook });
-	})
+	}),
 );
 
 router.get(
@@ -36,7 +36,7 @@ router.get(
 		const webhooks = await service.readMany();
 
 		res.json({ data: webhooks });
-	})
+	}),
 );
 
 router.get(
@@ -49,7 +49,7 @@ router.get(
 		const webhook = await service.readOne(id);
 
 		res.json({ data: webhook });
-	})
+	}),
 );
 
 router.delete(
@@ -62,7 +62,7 @@ router.delete(
 		await service.deleteOne(id);
 
 		res.status(204).end();
-	})
+	}),
 );
 
 router.patch(
@@ -74,15 +74,15 @@ router.patch(
 
 		const updates: Record<string, any> = {};
 
-		if (url) updates['url'] = url;
-		if (method) updates['method'] = method;
-		if (collections) updates['collections'] = collections;
+		if (url !== undefined) updates['url'] = url;
+		if (method !== undefined) updates['method'] = method;
+		if (collections !== undefined) updates['collections'] = collections;
 
 		const service = new WebhookService({ schema: req.schema, accountability: req.accountability });
 		const webhook = await service.updateOne(id, updates);
 
 		res.json({ data: webhook });
-	})
+	}),
 );
 
 export default router;

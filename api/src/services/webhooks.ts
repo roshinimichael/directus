@@ -1,6 +1,6 @@
-import { ItemsService } from './items.js';
 import type { AbstractServiceOptions, Item, PrimaryKey } from '@directus/types';
 import axios from 'axios';
+import { ItemsService } from './items.js';
 
 export class WebhookService extends ItemsService {
 	private static activeWebhooks: Map<string, WebhookConfig[]> = new Map();
@@ -36,6 +36,7 @@ export class WebhookService extends ItemsService {
 			filter: { id: { _eq: key } },
 			limit: 1,
 		});
+
 		const item = items[0];
 
 		if (!item) {
@@ -51,6 +52,7 @@ export class WebhookService extends ItemsService {
 
 		for (const webhook of webhooks) {
 			const collections = webhook['collections'] as string[];
+
 			for (const collection of collections) {
 				if (!WebhookService.activeWebhooks.has(collection)) {
 					WebhookService.activeWebhooks.set(collection, []);
@@ -68,7 +70,7 @@ export class WebhookService extends ItemsService {
 	static async dispatchWebhooksForCollection(
 		collection: string,
 		action: 'create' | 'update' | 'delete',
-		payload: Record<string, any>
+		payload: Record<string, any>,
 	): Promise<void> {
 		const webhooks = this.activeWebhooks.get(collection);
 
@@ -112,6 +114,7 @@ interface WebhookConfig {
 export async function registerWebhookHooks() {
 	const originalCreateOne = ItemsService.prototype.createOne;
 	const originalUpdateOne = ItemsService.prototype.updateOne;
+	const originalDeleteOne = ItemsService.prototype.deleteOne;
 
 	ItemsService.prototype.createOne = async function (data: Record<string, any>) {
 		const result = await originalCreateOne.call(this, data);
@@ -122,6 +125,12 @@ export async function registerWebhookHooks() {
 	ItemsService.prototype.updateOne = async function (key: PrimaryKey, data: Record<string, any>) {
 		const result = await originalUpdateOne.call(this, key, data);
 		await WebhookService.dispatchWebhooksForCollection(this.collection, 'update', { ['id']: key, ...data });
+		return result;
+	};
+
+	ItemsService.prototype.deleteOne = async function (key: PrimaryKey) {
+		const result = await originalDeleteOne.call(this, key);
+		await WebhookService.dispatchWebhooksForCollection(this.collection, 'delete', { ['id']: key });
 		return result;
 	};
 }
