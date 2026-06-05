@@ -39,5 +39,5 @@ jobs:
           allowedAuthors: |
             roshinimichael
           skyrampMcpVersion: next
-          sutSetupMode: adapt_workflow
+          sutSetupMode: 'none'
           targetSetupCommand: docker compose up -d --build
