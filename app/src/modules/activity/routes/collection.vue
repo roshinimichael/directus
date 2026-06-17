@@ -2,10 +2,11 @@
 import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { RouterView } from 'vue-router';
 import ActivityNavigation from '../components/navigation.vue';
 import VInfo from '@/components/v-info.vue';
+import { useActivityCounts } from '@/composables/use-activity-counts';
 import { usePreset } from '@/composables/use-preset';
 import { PrivateView } from '@/views/private';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
@@ -20,6 +21,9 @@ const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('di
 const { layoutWrapper } = useLayout(layout);
 
 const roleFilter = ref<Filter | null>(null);
+
+const { counts } = useActivityCounts();
+const totalCount = computed(() => Object.values(counts.value).reduce((sum, n) => sum + n, 0));
 </script>
 
 <template>
@@ -35,7 +39,7 @@ const roleFilter = ref<Filter | null>(null);
 		show-select="none"
 		collection="directus_activity"
 	>
-		<PrivateView :title="$t('activity_feed')" icon="access_time">
+		<PrivateView :title="totalCount > 0 ? `${$t('activity_feed')} (${totalCount})` : $t('activity_feed')" icon="access_time">
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
