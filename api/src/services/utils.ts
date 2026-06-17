@@ -20,7 +20,7 @@ export class UtilsService {
 		this.schema = options.schema;
 	}
 
-	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
+	private async _getSortField(collection: string): Promise<string> {
 		const sortFieldResponse =
 			(await this.knex.select('sort_field').from('directus_collections').where({ collection }).first()) ||
 			systemCollectionRows;
@@ -31,31 +31,41 @@ export class UtilsService {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
-		if (this.accountability && this.accountability.admin !== true) {
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection,
-				},
-				{
-					schema: this.schema,
-					knex: this.knex,
-				},
-			);
+		return sortField;
+	}
 
-			const allowedFields = await fetchAllowedFields(
-				{ collection, action: 'update', accountability: this.accountability },
-				{ schema: this.schema, knex: this.knex },
-			);
-
-			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
-				throw new ForbiddenError();
-			}
+	private _checkAuthenticated(): void {
+		if (!this.accountability) {
+			throw new ForbiddenError();
 		}
+	}
 
-		const primaryKeyField = this.schema.collections[collection]!.primary;
+	private async _validateSortAccess(collection: string, sortField: string): Promise<void> {
+		if (this.accountability!.admin === true) return;
 
+		await validateAccess(
+			{
+				accountability: this.accountability!,
+				action: 'update',
+				collection,
+			},
+			{
+				schema: this.schema,
+				knex: this.knex,
+			},
+		);
+
+		const allowedFields = await fetchAllowedFields(
+			{ collection, action: 'update', accountability: this.accountability! },
+			{ schema: this.schema, knex: this.knex },
+		);
+
+		if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
+			throw new ForbiddenError();
+		}
+	}
+
+	private async _normalizeSortValues(collection: string, sortField: string, primaryKeyField: string): Promise<void> {
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();
 
@@ -98,7 +108,15 @@ export class UtilsService {
 					.where(ids[i]);
 			}
 		}
+	}
 
+	private async _applySortMove(
+		collection: string,
+		sortField: string,
+		primaryKeyField: string,
+		item: PrimaryKey,
+		to: PrimaryKey,
+	): Promise<void> {
 		const targetSortValueResponse = await this.knex
 			.select(sortField)
 			.from(collection)
@@ -133,6 +151,16 @@ export class UtilsService {
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
 		}
+	}
+
+	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
+		this._checkAuthenticated();
+		const sortField = await this._getSortField(collection);
+		await this._validateSortAccess(collection, sortField);
+
+		const primaryKeyField = this.schema.collections[collection]!.primary;
+		await this._normalizeSortValues(collection, sortField, primaryKeyField);
+		await this._applySortMove(collection, sortField, primaryKeyField, item, to);
 
 		// check if cache should be cleared
 		const { cache } = getCache();
@@ -147,6 +175,41 @@ export class UtilsService {
 				collection,
 				item,
 				to,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			},
+		);
+	}
+
+	async sortMany(collection: string, moves: Array<{ item: PrimaryKey; to: PrimaryKey }>): Promise<void> {
+		if (moves.length === 0) return;
+
+		this._checkAuthenticated();
+		const sortField = await this._getSortField(collection);
+		await this._validateSortAccess(collection, sortField);
+
+		const primaryKeyField = this.schema.collections[collection]!.primary;
+		await this._normalizeSortValues(collection, sortField, primaryKeyField);
+
+		for (const { item, to } of moves) {
+			await this._applySortMove(collection, sortField, primaryKeyField, item, to);
+		}
+
+		// check if cache should be cleared
+		const { cache } = getCache();
+
+		if (shouldClearCache(cache, undefined, collection)) {
+			await cache.clear();
+		}
+
+		emitter.emitAction(
+			['items.sort', `${collection}.items.sort`],
+			{
+				collection,
+				moves,
 			},
 			{
 				database: this.knex,
