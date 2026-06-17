@@ -1,6 +1,7 @@
 import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
+import { QUERY_HARD_LIMIT_CAP } from '../constants.js';
 import getDatabase from '../database/index.js';
 import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -30,12 +31,22 @@ export class MetaService {
 			}),
 		);
 
-		return results.reduce((metaObject: Record<string, any>, value, index) => {
+		const meta = results.reduce((metaObject: Record<string, any>, value, index) => {
 			return {
 				...metaObject,
 				[query.meta![index]]: value,
 			};
 		}, {});
+
+		// query.limit is already sanitized (capped); use raw_limit if provided by caller
+		const rawLimit = query.raw_limit as number | undefined;
+
+		if (rawLimit === -1 || (rawLimit !== undefined && rawLimit > QUERY_HARD_LIMIT_CAP)) {
+			meta['limit_capped'] = true;
+			meta['effective_limit'] = QUERY_HARD_LIMIT_CAP;
+		}
+
+		return meta;
 	}
 
 	async totalCount(collection: string): Promise<number> {
