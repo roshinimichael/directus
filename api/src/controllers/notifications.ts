@@ -135,6 +135,25 @@ router.patch(
 );
 
 router.patch(
+	'/read-all',
+	asyncHandler(async (req, res, next) => {
+		const service = new NotificationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const keys = await service.updateByQuery(
+			await sanitizeQuery({ filter: { recipient: { _eq: req.accountability?.user } } }, req.schema, req.accountability),
+			{ status: 'read' },
+		);
+
+		res.locals['payload'] = { data: { updated: keys.length } };
+		return next();
+	}),
+	respond,
+);
+
+router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new NotificationsService({
