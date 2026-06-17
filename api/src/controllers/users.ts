@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import {
 	ErrorCode,
 	ForbiddenError,
@@ -107,12 +108,22 @@ router.get(
 			schema: req.schema,
 		});
 
+		const db = getDatabase();
+
+		const sessionCountResult = await db('directus_sessions')
+			.count('* as count')
+			.where({ user: req.accountability.user })
+			.andWhere('expires', '>', new Date())
+			.first();
+
+		const activeSessionCount = Number(sessionCountResult?.count ?? 0);
+
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
-			res.locals['payload'] = { data: item || null };
+			res.locals['payload'] = { data: { ...(item ?? {}), active_session_count: activeSessionCount } };
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
-				res.locals['payload'] = { data: { id: req.accountability.user } };
+				res.locals['payload'] = { data: { id: req.accountability.user, active_session_count: activeSessionCount } };
 				return next();
 			}
 
@@ -177,6 +188,74 @@ router.patch(
 		const service = new UsersService({ schema: req.schema });
 		await service.updateOne(req.accountability.user, { last_page: req.body.last_page }, { autoPurgeCache: false });
 
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/me/sessions',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const db = getDatabase();
+
+		const sessions = await db
+			.select('ip', 'user_agent', 'origin', 'expires')
+			.from('directus_sessions')
+			.where({ user: req.accountability.user })
+			.andWhere('expires', '>', new Date())
+			.orderBy('expires', 'desc');
+
+		const data = sessions.map((s) => ({
+			id: createHash('sha256')
+				.update(new Date(s.expires).toISOString() + s.ip + s.user_agent)
+				.digest('hex')
+				.slice(0, 16),
+			ip: s.ip ?? null,
+			user_agent: s.user_agent ?? null,
+			origin: s.origin ?? null,
+			expires: s.expires,
+		}));
+
+		res.locals['payload'] = { data };
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/me/sessions/:id',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const db = getDatabase();
+
+		const sessions = await db
+			.select('token', 'ip', 'user_agent', 'expires')
+			.from('directus_sessions')
+			.where({ user: req.accountability.user })
+			.andWhere('expires', '>', new Date());
+
+		const match = sessions.find(
+			(s) =>
+				createHash('sha256')
+					.update(new Date(s.expires).toISOString() + s.ip + s.user_agent)
+					.digest('hex')
+					.slice(0, 16) === req.params['id'],
+		);
+
+		if (!match) {
+			throw new ForbiddenError();
+		}
+
+		await db('directus_sessions').where({ token: match.token }).delete();
+
+		res.locals['payload'] = {};
 		return next();
 	}),
 	respond,
